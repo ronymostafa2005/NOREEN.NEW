@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { TextField, Button, MenuItem, Typography, Container, Box } from "@mui/material";
+import { TextField, Button, Typography, Container, Box, Menu, MenuItem } from "@mui/material";
 import signupImage from "./CSS&Assets/Sign up.gif";
 
 const Signup = () => {
@@ -13,9 +13,22 @@ const Signup = () => {
     role: "",
   });
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = (role) => {
+    if (role) {
+      setFormData((prev) => ({ ...prev, role }));
+    }
+    setAnchorEl(null);
   };
 
   const handleSubmit = (e) => {
@@ -30,19 +43,34 @@ const Signup = () => {
           <Typography variant="h6" sx={styles.subHeading}>Sign Up</Typography>
           <Typography variant="h4" sx={styles.heading}>Create Account</Typography>
           <Typography variant="body2" textAlign="center">Please enter your information and create an account</Typography>
-          
+
           <Box component="form" sx={styles.form} onSubmit={handleSubmit}>
-            {formFields.map(({ label, name, type, duration }) => (
-              <motion.div key={name} initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration }}>
-                <TextField fullWidth label={label} name={name} value={formData[name]} onChange={handleChange} variant="outlined" type={type} required />
-              </motion.div>
-            ))}
-            
+            {formFields.map(({ label, name, type, duration }) =>
+              name !== "role" ? (
+                <motion.div key={name} initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration }}>
+                  <TextField fullWidth label={label} name={name} value={formData[name]} onChange={handleChange} variant="outlined" type={type} required />
+                </motion.div>
+              ) : (
+                <motion.div key={name} initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration }}>
+                  {/* زر اختيار الدور */}
+                  <Button fullWidth variant="outlined" onClick={handleClick} sx={styles.button}>
+                    {formData.role ? `Selected Role: ${formData.role}` : "Choose Role"}
+                  </Button>
+
+                  {/* القائمة المنسدلة */}
+                  <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => handleClose(null)}>
+                    <MenuItem onClick={() => handleClose("Instructor")}>Instructor</MenuItem>
+                    <MenuItem onClick={() => handleClose("Student")}>Student</MenuItem>
+                  </Menu>
+                </motion.div>
+              )
+            )}
+
             <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
               <Button fullWidth variant="contained" component={Link} to="/inprogress" sx={styles.button}>Sign Up</Button>
             </motion.div>
           </Box>
-          
+
           <Typography variant="body2" sx={styles.loginText}>
             Have an account? <Link to="/Signin" style={styles.loginLink}>Sign in</Link>
           </Typography>
@@ -74,7 +102,7 @@ const styles = {
   heading: { fontSize: "32px", color: "#0055b3", marginBottom: "10px", fontWeight: "600" },
   subHeading: { fontSize: "20px", color: "#777", marginBottom: "5px", fontWeight: "400" },
   form: { display: "flex", flexDirection: "column", width: "100%", gap: "15px", marginTop: "10px" },
-  button: { padding: "12px", fontSize: "18px", backgroundColor: "#0055b3", borderRadius: "8px", fontWeight: "600", fontFamily: "'Poppins', sans-serif", transition: "transform 0.3s ease-in-out" },
+  button: { padding: "12px", fontSize: "18px", borderRadius: "8px", fontWeight: "600", fontFamily: "'Poppins', sans-serif", transition: "transform 0.3s ease-in-out" },
   loginText: { marginTop: "15px", fontSize: "16px", color: "#333" },
   loginLink: { color: "#0055b3", textDecoration: "none", fontWeight: "600", transition: "0.3s" },
 };
