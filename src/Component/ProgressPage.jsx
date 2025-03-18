@@ -1,172 +1,107 @@
-import {
-  Box,
-  Typography,
-  IconButton,
-  Card,
-  AvatarGroup,
-  Avatar,
-} from "@mui/material";
-import {
-  ArrowBack,
-  Delete,
-  Edit,
-  EmojiEvents,
-  Add,
-  Visibility,
-} from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import { motion } from "framer-motion";
 
-const projects = [
-  {
-    title: "Data Compression",
-    category: "OS",
-    progress: 50,
-    priority: 5,
-    users: [
-      "https://randomuser.me/api/portraits/men/1.jpg",
-      "https://randomuser.me/api/portraits/women/1.jpg",
-    ],
-  },
-  {
-    title: "Portfolio",
-    category: "Web",
-    progress: 80,
-    priority: 3,
-    users: [
-      "https://randomuser.me/api/portraits/men/2.jpg",
-      "https://randomuser.me/api/portraits/women/2.jpg",
-    ],
-  },
-  {
-    title: "Candy Crush",
-    category: "Data",
-    progress: 60,
-    priority: 9,
-    users: [
-      "https://randomuser.me/api/portraits/men/3.jpg",
-      "https://randomuser.me/api/portraits/women/3.jpg",
-    ],
-  },
-  {
-    title: "Library",
-    category: "PY",
-    progress: 40,
-    priority: 5,
-    users: [
-      "https://randomuser.me/api/portraits/men/4.jpg",
-      "https://randomuser.me/api/portraits/women/4.jpg",
-    ],
-  },
+// نسبة الإنجاز
+const progress = 65;
+const progressColors = {
+  todo: "#a0d468",
+  inProgress: "#f6bb42",
+  completed: "#4a90e2",
+};
+
+// المهام
+const tasks = [
+  { title: "Completed", count: 18, status: "18 Task Completed" },
+  { title: "In Progress", count: 2, status: "1 started" },
+  { title: "To Do", count: 2, status: "1 Upcoming" },
 ];
 
-const ProjectCard = ({ project, navigate }) => (
-  <Card
-    sx={{
-      display: "flex",
-      flexDirection: { xs: "column", sm: "row" },
-      alignItems: "center",
-      justifyContent: "space-between",
-      mb: 2,
-      p: 2,
-      borderRadius: 2,
-      boxShadow: 3,
-      border: "1px solid #90caf9",
-      bgcolor: "white",
-      width: "100%",
-      maxWidth: "500px",
-    }}
-  >
-    <Box sx={{ flex: 1, textAlign: { xs: "center", sm: "left" } }}>
-      <Typography variant="body1" fontWeight="bold">{project.title} 😃</Typography>
-      <Typography variant="caption" color="gray">{project.category}</Typography>
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
-        <AvatarGroup max={2} sx={{ mr: 1 }}>
-          {project.users.map((user, idx) => (
-            <Avatar key={idx} src={user} sx={{ width: 24, height: 24 }} />
-          ))}
-        </AvatarGroup>
-        <Box
-          sx={{
-            width: "100px",
-            height: 8,
-            bgcolor: "#ddd",
-            borderRadius: 4,
-            overflow: "hidden",
-          }}
-        >
-          <Box
-            sx={{ width: `${project.progress}%`, height: "100%", bgcolor: "#004aad" }}
-          />
-        </Box>
-      </Box>
-    </Box>
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Typography
-        variant="body2"
-        sx={{
-          bgcolor: "#e0ffe0",
-          px: 1.5,
-          py: 0.5,
-          borderRadius: 10,
-          fontSize: 12,
-        }}
-      >
-        {project.priority}
-      </Typography>
-      <IconButton color="primary" onClick={() => navigate("/EditingPage")}>
-        <Edit />
-      </IconButton>
-      <IconButton color="primary" onClick={() => navigate("/GamificationPage")}>
-        <EmojiEvents sx={{ color: "#004aad" }} />
-      </IconButton>
-      <IconButton color="primary" onClick={() => navigate("/ProjectDetails")}>
-        <Visibility sx={{ color: "#004aad" }} />
-      </IconButton>
-      <IconButton color="error">
-        <Delete />
-      </IconButton>
-    </Box>
-  </Card>
-);
-
-export default function Projects() {
-  const navigate = useNavigate();
-
+const ProgressPage = () => {
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "#f9f9f9", p: 3 }}>
-      <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-        <IconButton color="primary" sx={{ mr: 1 }} onClick={() => navigate("/Inprogress")}>
-          <ArrowBack />
-        </IconButton>
-        <Typography variant="h5" fontWeight="bold" sx={{ flex: 1, textAlign: "center" }}>
-          Projects
-        </Typography>
-      </Box>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "20px",
+        backgroundColor: "#f8f9fa",
+        minHeight: "100vh",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      {/* العنوان */}
+      <h2 style={{ fontSize: "20px", fontWeight: "bold", color: "#333", marginBottom: "20px" }}>
+        Your Progress
+      </h2>
 
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        {projects.map((project, index) => (
-          <ProjectCard key={index} project={project} navigate={navigate} />
+      {/* الدائرة */}
+      <div style={{ width: "180px", height: "180px", marginBottom: "20px" }}>
+        <CircularProgressbar
+          value={progress}
+          text={`${progress}% Completed`}
+          styles={buildStyles({
+            textSize: "14px",
+            pathTransitionDuration: 0.5,
+            pathColor: progressColors.completed,
+            trailColor: "#e0e0e0",
+            textColor: "#333",
+          })}
+        />
+      </div>
+
+      {/* دليل الألوان */}
+      <div style={{ display: "flex", gap: "15px", marginBottom: "20px" }}>
+        {Object.entries(progressColors).map(([key, color]) => (
+          <div key={key} style={{ display: "flex", alignItems: "center" }}>
+            <span
+              style={{
+                display: "inline-block",
+                width: "10px",
+                height: "10px",
+                backgroundColor: color,
+                borderRadius: "50%",
+                marginRight: "5px",
+              }}
+            ></span>
+            <span style={{ fontSize: "14px", color: "#333" }}>{key.replace(/([A-Z])/g, " $1")}</span>
+          </div>
         ))}
-      </Box>
+      </div>
 
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mt: 3 }}>
-        <IconButton
-          color="primary"
-          sx={{
-            bgcolor: "#004aad",
-            color: "white",
-            borderRadius: 2,
-            p: 1.2,
-            "&:hover": { bgcolor: "#003a8c" },
-          }}
-          onClick={() => navigate("/Addtask")}
-        >
-          <Add />
-        </IconButton>
-        <Typography variant="body2" fontWeight="bold" sx={{ ml: 1, color: "#004aad" }}>
-          Add Task
-        </Typography>
-      </Box>
-    </Box>
+      {/* قائمة المهام */}
+      <div style={{ width: "100%", maxWidth: "400px" }}>
+        <h3 style={{ fontSize: "16px", fontWeight: "600", color: "#666", marginBottom: "10px" }}>
+          Monthly
+        </h3>
+
+        {tasks.map((task, index) => (
+          <motion.div key={index} whileHover={{ scale: 1.02 }} transition={{ duration: 0.3 }}>
+            <div
+              style={{
+                padding: "15px",
+                marginBottom: "10px",
+                backgroundColor: "white",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                borderRadius: "10px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                border: "1px solid #ddd",
+              }}
+            >
+              <div>
+                <h4 style={{ fontSize: "14px", fontWeight: "bold", color: "#333" }}>{task.title}</h4>
+                <p style={{ fontSize: "12px", color: "#666" }}>{task.count} Tasks • {task.status}</p>
+              </div>
+              <span style={{ fontSize: "20px", color: "#888" }}>...</span>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
   );
-}
+};
+
+export default ProgressPage;
